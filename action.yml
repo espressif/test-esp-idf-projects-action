@@ -1,0 +1,29 @@
+name: "Test ESP-IDF Projects"
+description: "Test ESP-IDF projects"
+
+inputs:
+  marker_expr:
+    description: "pytest marker expression, will be passed to pytest -m"
+  additional_args:
+    description: "additional arguments to pass to pytest"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+    - name: Install Dependencies
+      shell: bash
+      run: |
+        pip install -U idf-ci
+    - name: Test ESP-IDF Projects
+      shell: bash
+      run: |
+        ARGS=""
+        if [ -n "${{ inputs.marker_expr }}" ]; then
+          ARGS+=" -m '${{ inputs.marker_expr }}'"
+        fi
+        if [ -n "${{ inputs.additional_args }}" ]; then
+          ARGS+=" ${{ inputs.additional_args }}"
+        fi
+
+        pytest $ARGS
