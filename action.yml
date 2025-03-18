@@ -2,10 +2,13 @@ name: "Test ESP-IDF Projects"
 description: "Test ESP-IDF projects"
 
 inputs:
-  marker_expr:
-    description: "pytest marker expression, will be passed to pytest -m"
+  nodes:
+    description: "The pytest nodes to test"
+    required: true
   additional_args:
     description: "additional arguments to pass to pytest"
+  junit_filepath:
+    description: "The name of the junit file report"
 
 runs:
   using: "composite"
@@ -15,15 +18,19 @@ runs:
       shell: bash
       run: |
         pip install -U idf-ci
+    - uses: actions/download-artifact@v4
+      with:
+        merge-multiple: true
     - name: Test ESP-IDF Projects
       shell: bash
       run: |
-        ARGS=""
-        if [ -n "${{ inputs.marker_expr }}" ]; then
-          ARGS+=" -m '${{ inputs.marker_expr }}'"
+        if [ -z "${{ inputs.junit_filepath }}" ]; then
+          pytest ${{ inputs.nodes }} ${{ inputs.additional_args }}
+        else
+          pytest ${{ inputs.nodes }} ${{ inputs.additional_args }} --junitxml=${{ inputs.junit_filename }}
         fi
-        if [ -n "${{ inputs.additional_args }}" ]; then
-          ARGS+=" ${{ inputs.additional_args }}"
-        fi
-
-        pytest $ARGS
+    - name: Uplaod Test Results
+      uses: actions/upload-artifact@v4
+      with:
+        path: ${{ inputs.junit_filepath }}
+        name: test-report-${{ inputs.junit_filepath }}
