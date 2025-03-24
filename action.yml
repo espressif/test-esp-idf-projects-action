@@ -11,7 +11,7 @@ inputs:
     description: "The name of the junit file report"
   debug:
     description: "Enable debug mode"
-    default: "true" # [FIXME] change to false
+    default: "false"
 
 runs:
   using: "composite"
@@ -20,7 +20,7 @@ runs:
     - name: Install Dependencies
       shell: bash
       run: |
-        pip install -U idf-ci==0.1.8.a0  # [FIXME] change to idf-ci
+        pip install -U idf-ci
     - uses: actions/download-artifact@v4
       with:
         merge-multiple: true
