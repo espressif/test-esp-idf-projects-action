@@ -3,12 +3,12 @@ description: "Test ESP-IDF projects"
 
 inputs:
   nodes:
-    description: "The pytest nodes to test"
-    required: true
+    description: "The pytest nodes to test. if not provided, all nodes will be tested."
+    default: ""
   additional_args:
-    description: "additional arguments to pass to pytest"
+    description: "Additional arguments to pass to pytest."
   junit_filepath:
-    description: "The name of the junit file report"
+    description: "The name of the junit file report."
   debug:
     description: "Enable debug mode"
     default: "false"
